@@ -43,6 +43,7 @@
   <ItemGroup>
     <Compile Include="BGLib\bglib.cs" />
     <Compile Include="BLE\ConnectionManager.cs" />
+    <Compile Include="Controller\ToolControler.cs" />
     <Compile Include="Model\Tool.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
