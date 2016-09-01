@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using RedTooth.Core.Model;
 
 
 
@@ -16,23 +17,28 @@ namespace MKBLE
     {
         public Bluegiga.BGLib bglib = new Bluegiga.BGLib();
         System.IO.Ports.SerialPort serialAPI = new System.IO.Ports.SerialPort();
-        Dictionary<String, Byte[]> localTools = new Dictionary<String, Byte[]>(); 
+        Dictionary<String, Tool> localTools = new Dictionary<String, Tool>(); 
+        //
+        //Only one connection for now. Will update later
+        public Byte connection_handle = 0;              // connection handle (will always be 0 if only one connection happens at a time)
         private String logLocation = "c:\\temp\\hackout\\blelog.txt";
         public void OpenConnection()
         {
-            var comPort = System.IO.Ports.SerialPort.GetPortNames().Single();
+            //var comPort = System.IO.Ports.SerialPort.GetPortNames().Single();
+
             serialAPI.Handshake = System.IO.Ports.Handshake.RequestToSend;
             serialAPI.BaudRate = 115200;
-            serialAPI.PortName = comPort;
+            serialAPI.PortName = "COM5";
             serialAPI.DataBits = 8;
             serialAPI.StopBits = System.IO.Ports.StopBits.One;
             serialAPI.Parity = System.IO.Ports.Parity.None;
             serialAPI.DataReceived += new System.IO.Ports.SerialDataReceivedEventHandler(DataReceivedHandler);
             serialAPI.Open();
-            Console.WriteLine(string.Format("Port {0} (open)", comPort));
+            Console.WriteLine(string.Format("Port {0} (open)", serialAPI.PortName));
 
             bglib.BLEEventSystemBoot += new Bluegiga.BLE.Events.System.BootEventHandler(this.SystemBootEvent);
             bglib.BLEEventGAPScanResponse += new Bluegiga.BLE.Events.GAP.ScanResponseEventHandler(this.GAPScanResponseEvent);
+            bglib.BLEEventConnectionStatus += new Bluegiga.BLE.Events.Connection.StatusEventHandler(this.ConnectionStatusEvent);
             Console.WriteLine("Events Set");
 
         }
@@ -107,13 +113,19 @@ namespace MKBLE
                 mpbid = ParseMPBID(e.data);
                 if (!localTools.ContainsKey(mpbid))
                 {
-                    localTools.Add(mpbid, e.sender);
+                    Tool t = new Tool();
+                    t.BluetoothAddress = e.sender;
+                    t.MPBID = mpbid;
+                    t.AddressType = e.address_type;
+                    t.RSSI = e.rssi;
+                    t.ID = localTools.Count() + 1;
+                    localTools.Add(mpbid, t);
                     Console.WriteLine("Found: " + mpbid + " : " + localTools.Count.ToString());
                     if (mpbid == "0007000D36")
                     {
                         Console.WriteLine("Found 5698-----------------------------------");
                         //Connect
-                        //ConnectToTool(e.sender, e.address_type);
+                        ConnectToTool(t);
                         
                     }
                         
@@ -124,10 +136,43 @@ namespace MKBLE
             Debug.Print(log);
         }
 
-        private void ConnectToTool(Byte[] BluetothAddress, byte addressType)
+        public void ConnectionStatusEvent(object sender, Bluegiga.BLE.Events.Connection.StatusEventArgs e)
         {
-            Byte[] cmd = bglib.BLECommandGAPConnectDirect(BluetothAddress, addressType, 0x20, 0x30, 0x100, 0);
+            String log = String.Format("ble_evt_connection_status: connection={0}, flags={1}, address=[ {2}], address_type={3}, conn_interval={4}, timeout={5}, latency={6}, bonding={7}" + Environment.NewLine,
+                e.connection,
+                e.flags,
+                ByteArrayToHexString(e.address),
+                e.address_type,
+                e.conn_interval,
+                e.timeout,
+                e.latency,
+                e.bonding
+                );
+            Console.Write(log);
+            
+
+            if ((e.flags & 0x05) == 0x05)
+            {
+                // connected, now perform service discovery
+                connection_handle = e.connection;
+                Console.WriteLine(String.Format("Connected to {0}", ByteArrayToHexString(e.address)) + Environment.NewLine);
+                Byte[] cmd = bglib.BLECommandATTClientReadByGroupType(e.connection, 0x0001, 0xFFFF, new Byte[] { 0x00, 0x28 }); // "service" UUID is 0x2800 (little-endian for UUID uint8array)
+                // DEBUG: display bytes written
+                Console.WriteLine(String.Format("=> TX ({0}) [ {1}]", cmd.Length, ByteArrayToHexString(cmd)) + Environment.NewLine);
+                bglib.SendCommand(serialAPI, cmd);
+                //while (bglib.IsBusy()) ;
+
+                // update state
+                //app_state = STATE_FINDING_SERVICES;
+            }
+        }
+
+        private void ConnectToTool(Tool t)
+        {
+            Byte[] cmd = bglib.BLECommandGAPConnectDirect(t.BluetoothAddress, t.AddressType, 0x20, 0x30, 0x100, 0);
             bglib.SendCommand(serialAPI, cmd);
+            t.BLEState = BluetoothState.STATE_CONNECTING;
+
         }
 
         private bool isMT(List<Byte[]> services)
