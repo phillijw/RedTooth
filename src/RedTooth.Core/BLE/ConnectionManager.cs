@@ -24,11 +24,11 @@ namespace MKBLE
         private String logLocation = "c:\\temp\\hackout\\blelog.txt";
         public void OpenConnection()
         {
-            //var comPort = System.IO.Ports.SerialPort.GetPortNames().Single();
+            var comPort = System.IO.Ports.SerialPort.GetPortNames().Single();
 
             serialAPI.Handshake = System.IO.Ports.Handshake.RequestToSend;
             serialAPI.BaudRate = 115200;
-            serialAPI.PortName = "COM5";
+            serialAPI.PortName = comPort;
             serialAPI.DataBits = 8;
             serialAPI.StopBits = System.IO.Ports.StopBits.One;
             serialAPI.Parity = System.IO.Ports.Parity.None;
