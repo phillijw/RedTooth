@@ -20,6 +20,7 @@ namespace MKBLE
         Dictionary<String, Tool> localTools = new Dictionary<String, Tool>(); 
         //
         //Only one connection for now. Will update later
+        //Seems like this is an incremental counter counting up connections. 
         public Byte connection_handle = 0;              // connection handle (will always be 0 if only one connection happens at a time)
         private String logLocation = "c:\\temp\\hackout\\blelog.txt";
         public void OpenConnection()
@@ -242,6 +243,34 @@ namespace MKBLE
             foreach (byte b in ba)
                 hex.AppendFormat("{0:x2} ", b);
             return hex.ToString();
+        }
+
+        public void ResetAll()
+        {
+            // stop everything we're doing, if possible
+            Byte[] cmd;
+
+            // disconnect if connected
+            //CJB IM not sure if the 0 here is the connection index, or the connection address. Assume since it is 0 it is connection 0
+            //If we have multiples might have to disconnect them all
+            cmd = bglib.BLECommandConnectionDisconnect(0);
+            // DEBUG: display bytes read
+            Console.WriteLine(String.Format("=> TX ({0}) [ {1}]", cmd.Length, ByteArrayToHexString(cmd)) + Environment.NewLine);
+            bglib.SendCommand(serialAPI, cmd);
+            //while (bglib.IsBusy()) ;
+
+            // stop scanning if scanning
+            cmd = bglib.BLECommandGAPEndProcedure();
+            // DEBUG: display bytes read
+            Console.WriteLine(String.Format("=> TX ({0}) [ {1}]", cmd.Length, ByteArrayToHexString(cmd)) + Environment.NewLine);
+            bglib.SendCommand(serialAPI, cmd);
+            //while (bglib.IsBusy()) ;
+
+            // stop advertising if advertising
+            cmd = bglib.BLECommandGAPSetMode(0, 0);
+            // DEBUG: display bytes read
+            Console.WriteLine(String.Format("=> TX ({0}) [ {1}]", cmd.Length, ByteArrayToHexString(cmd)) + Environment.NewLine);
+            bglib.SendCommand(serialAPI, cmd);
         }
     }
 }
