@@ -38,6 +38,12 @@
             <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.Y)" Storyboard.TargetName="button1">
                 <EasingDoubleKeyFrame KeyTime="0" Value="5.969"/>
             </DoubleAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleX)" Storyboard.TargetName="comboBox">
+                <EasingDoubleKeyFrame KeyTime="0" Value="1.044"/>
+            </DoubleAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.X)" Storyboard.TargetName="comboBox">
+                <EasingDoubleKeyFrame KeyTime="0" Value="-1.899"/>
+            </DoubleAnimationUsingKeyFrames>
         </Storyboard>
     </Window.Resources>
     <Window.Triggers>
@@ -101,6 +107,16 @@
                 </TransformGroup>
             </Button.RenderTransform>
         </Button>
+        <ComboBox x:Name="comboBox" HorizontalAlignment="Left" Margin="36.698,153.612,0,144.14" Width="86.821" RenderTransformOrigin="0.5,0.5">
+            <ComboBox.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform/>
+                    <RotateTransform/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </ComboBox.RenderTransform>
+        </ComboBox>
 
     </Grid>
 </Window>
