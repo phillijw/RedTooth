@@ -108,14 +108,26 @@ namespace MKBLE
                 if (!localTools.ContainsKey(mpbid))
                 {
                     localTools.Add(mpbid, e.sender);
-                    Console.WriteLine("Found: " + mpbid + " : " + localTools.Count.ToString());    
+                    Console.WriteLine("Found: " + mpbid + " : " + localTools.Count.ToString());
                     if (mpbid == "0007000D36")
+                    {
                         Console.WriteLine("Found 5698-----------------------------------");
+                        //Connect
+                        //ConnectToTool(e.sender, e.address_type);
+                        
+                    }
+                        
                 }
                 
             }
             //Console.Write(log);
             Debug.Print(log);
+        }
+
+        private void ConnectToTool(Byte[] BluetothAddress, byte addressType)
+        {
+            Byte[] cmd = bglib.BLECommandGAPConnectDirect(BluetothAddress, addressType, 0x20, 0x30, 0x100, 0);
+            bglib.SendCommand(serialAPI, cmd);
         }
 
         private bool isMT(List<Byte[]> services)
