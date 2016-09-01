@@ -24,5 +24,6 @@ namespace RedTooth.Core.Model
         public byte AddressType { get; set; }
         public int RSSI { get; set; }
         public BluetoothState BLEState { get; set; }
+        public byte ConnectionHandle { get; set; }
     }
 }

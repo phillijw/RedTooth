@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Diagnostics.Eventing.Reader;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Bluegiga.BLE.Events.ATTClient;
 using RedTooth.Core.Model;
 
 
@@ -17,11 +19,19 @@ namespace MKBLE
     {
         public Bluegiga.BGLib bglib = new Bluegiga.BGLib();
         System.IO.Ports.SerialPort serialAPI = new System.IO.Ports.SerialPort();
-        Dictionary<String, Tool> localTools = new Dictionary<String, Tool>(); 
+        public Dictionary<String, Tool> localTools = new Dictionary<String, Tool>(); 
         //
         //Only one connection for now. Will update later
+        //Seems like this is an incremental counter counting up connections. 
         public Byte connection_handle = 0;              // connection handle (will always be 0 if only one connection happens at a time)
         private String logLocation = "c:\\temp\\hackout\\blelog.txt";
+
+        public ConnectionManager()
+        {
+            OpenConnection();
+            Scan();
+        }
+
         public void OpenConnection()
         {
             var comPort = System.IO.Ports.SerialPort.GetPortNames().Single();
@@ -39,9 +49,13 @@ namespace MKBLE
             bglib.BLEEventSystemBoot += new Bluegiga.BLE.Events.System.BootEventHandler(this.SystemBootEvent);
             bglib.BLEEventGAPScanResponse += new Bluegiga.BLE.Events.GAP.ScanResponseEventHandler(this.GAPScanResponseEvent);
             bglib.BLEEventConnectionStatus += new Bluegiga.BLE.Events.Connection.StatusEventHandler(this.ConnectionStatusEvent);
+            bglib.BLEEventSystemProtocolError += new Bluegiga.BLE.Events.System.ProtocolErrorEventHandler(this.ProtocolErrorEvent);
+            bglib.BLEEventATTClientProcedureCompleted += new Bluegiga.BLE.Events.ATTClient.ProcedureCompletedEventHandler(this.ProcedureCompleteEvent);
             Console.WriteLine("Events Set");
 
         }
+
+        
 
         public void Scan()
         {
@@ -73,6 +87,11 @@ namespace MKBLE
                 bglib.Parse(inData[i]);
             }
         }
+        private void ProcedureCompleteEvent(object sender, ProcedureCompletedEventArgs e)
+        {
+            Console.WriteLine(String.Format("Got response from tool {0}", e.result));
+        }
+        
 
         public void SystemBootEvent(object sender, Bluegiga.BLE.Events.System.BootEventArgs e)
         {
@@ -112,7 +131,7 @@ namespace MKBLE
             {
                 String mpbid;
                 mpbid = ParseMPBID(e.data);
-                if (!localTools.ContainsKey(mpbid))
+                if (!localTools.ContainsKey(ByteArrayToHexString(e.sender)))
                 {
                     Tool t = new Tool();
                     t.BluetoothAddress = e.sender;
@@ -120,7 +139,7 @@ namespace MKBLE
                     t.AddressType = e.address_type;
                     t.RSSI = e.rssi;
                     t.ID = localTools.Count() + 1;
-                    localTools.Add(mpbid, t);
+                    localTools.Add(ByteArrayToHexString(e.sender), t);
                     Console.WriteLine("Found: " + mpbid + " : " + localTools.Count.ToString());
                     if (mpbid == "0007000D36")
                     {
@@ -155,17 +174,32 @@ namespace MKBLE
             if ((e.flags & 0x05) == 0x05)
             {
                 // connected, now perform service discovery
-                connection_handle = e.connection;
-                Console.WriteLine(String.Format("Connected to {0}", ByteArrayToHexString(e.address)) + Environment.NewLine);
-                Byte[] cmd = bglib.BLECommandATTClientReadByGroupType(e.connection, 0x0001, 0xFFFF, new Byte[] { 0x00, 0x28 }); // "service" UUID is 0x2800 (little-endian for UUID uint8array)
-                // DEBUG: display bytes written
-                Console.WriteLine(String.Format("=> TX ({0}) [ {1}]", cmd.Length, ByteArrayToHexString(cmd)) + Environment.NewLine);
+                Tool t;
+
+                if (!localTools.TryGetValue(ByteArrayToHexString(e.address), out t))
+                {
+                    Console.WriteLine("Tool not found on connection!");
+                    return;
+                }
+                t.ConnectionHandle = e.connection;
+                Byte[] cmd = bglib.BLECommandATTClientAttributeWrite(t.ConnectionHandle, 0, new byte[] {0x01});
                 bglib.SendCommand(serialAPI, cmd);
+                Console.WriteLine("Wrote Command");
+                //Byte[] cmd = bglib.BLECommandATTClientAttributeWrite(e.connection, att_handle_measurement_ccc, new Byte[] { 0x02, 0x00 });
+                //// DEBUG: display bytes written
+                //ThreadSafeDelegate(delegate { txtLog.AppendText(String.Format("=> TX ({0}) [ {1}]", cmd.Length, ByteArrayToHexString(cmd)) + Environment.NewLine); });
+                
+
                 //while (bglib.IsBusy()) ;
 
                 // update state
                 //app_state = STATE_FINDING_SERVICES;
             }
+        }
+
+        public void ProtocolErrorEvent(object sender, Bluegiga.BLE.Events.System.ProtocolErrorEventArgs e)
+        {
+            Console.WriteLine("Error!!!!!!!!!!!!!!!!!!!!!!");
         }
 
         private void ConnectToTool(Tool t)
@@ -243,6 +277,34 @@ namespace MKBLE
             foreach (byte b in ba)
                 hex.AppendFormat("{0:x2} ", b);
             return hex.ToString();
+        }
+
+        public void ResetAll()
+        {
+            // stop everything we're doing, if possible
+            Byte[] cmd;
+
+            // disconnect if connected
+            //CJB IM not sure if the 0 here is the connection index, or the connection address. Assume since it is 0 it is connection 0
+            //If we have multiples might have to disconnect them all
+            cmd = bglib.BLECommandConnectionDisconnect(0);
+            // DEBUG: display bytes read
+            Console.WriteLine(String.Format("=> TX ({0}) [ {1}]", cmd.Length, ByteArrayToHexString(cmd)) + Environment.NewLine);
+            bglib.SendCommand(serialAPI, cmd);
+            //while (bglib.IsBusy()) ;
+
+            // stop scanning if scanning
+            cmd = bglib.BLECommandGAPEndProcedure();
+            // DEBUG: display bytes read
+            Console.WriteLine(String.Format("=> TX ({0}) [ {1}]", cmd.Length, ByteArrayToHexString(cmd)) + Environment.NewLine);
+            bglib.SendCommand(serialAPI, cmd);
+            //while (bglib.IsBusy()) ;
+
+            // stop advertising if advertising
+            cmd = bglib.BLECommandGAPSetMode(0, 0);
+            // DEBUG: display bytes read
+            Console.WriteLine(String.Format("=> TX ({0}) [ {1}]", cmd.Length, ByteArrayToHexString(cmd)) + Environment.NewLine);
+            bglib.SendCommand(serialAPI, cmd);
         }
     }
 }
