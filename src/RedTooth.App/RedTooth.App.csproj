@@ -9,9 +9,10 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>RedTooth.App</RootNamespace>
     <AssemblyName>RedTooth.App</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -50,10 +51,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\bglib\MSVCSharp\Examples\BLEScanner\BLEScanner.csproj">
-      <Project>{0db660ef-d35e-4eb5-9718-168207bbb819}</Project>
-      <Name>BLEScanner</Name>
-    </ProjectReference>
     <ProjectReference Include="..\RedTooth.Core\RedTooth.Core.csproj">
       <Project>{7e62bb9a-bb87-434e-9c6e-70bf93eed44a}</Project>
       <Name>RedTooth.Core</Name>
