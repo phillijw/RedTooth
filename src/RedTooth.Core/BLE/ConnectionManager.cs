@@ -20,16 +20,16 @@ namespace MKBLE
         private String logLocation = "c:\\temp\\hackout\\blelog.txt";
         public void OpenConnection()
         {
-            
+            var comPort = System.IO.Ports.SerialPort.GetPortNames().Single();
             serialAPI.Handshake = System.IO.Ports.Handshake.RequestToSend;
             serialAPI.BaudRate = 115200;
-            serialAPI.PortName = "COM5";
+            serialAPI.PortName = comPort;
             serialAPI.DataBits = 8;
             serialAPI.StopBits = System.IO.Ports.StopBits.One;
             serialAPI.Parity = System.IO.Ports.Parity.None;
             serialAPI.DataReceived += new System.IO.Ports.SerialDataReceivedEventHandler(DataReceivedHandler);
             serialAPI.Open();
-            Console.WriteLine("Port open");
+            Console.WriteLine(string.Format("Port {0} (open)", comPort));
 
             bglib.BLEEventSystemBoot += new Bluegiga.BLE.Events.System.BootEventHandler(this.SystemBootEvent);
             bglib.BLEEventGAPScanResponse += new Bluegiga.BLE.Events.GAP.ScanResponseEventHandler(this.GAPScanResponseEvent);
