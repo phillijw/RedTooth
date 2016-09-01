@@ -13,6 +13,7 @@ namespace RedTooth.App
         {
             ConnectionManager cm = new ConnectionManager();
             cm.OpenConnection();
+            cm.Scan();
             Console.Read();
         }
     }
