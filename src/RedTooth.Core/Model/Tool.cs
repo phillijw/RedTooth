@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 
 namespace RedTooth.Core.Model
 {
-    public enum  BluetoothState :int
+    public enum  BluetoothState : int
     {
         STATE_STANDBY = 0,
         STATE_SCANNING = 1,
         STATE_CONNECTING = 2,
         STATE_FINDING_SERVICES = 3,
         STATE_FINDING_ATTRIBUTES = 4,
-        STATE_LISTENING_MEASUREMENTS = 5
+        STATE_SENDING_COMMAND = 5
     }
 
     public class Tool

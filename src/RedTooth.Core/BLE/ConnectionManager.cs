@@ -25,7 +25,8 @@ namespace MKBLE
         //Seems like this is an incremental counter counting up connections. 
         public Byte connection_handle = 0;              // connection handle (will always be 0 if only one connection happens at a time)
         private String logLocation = "c:\\temp\\hackout\\blelog.txt";
-
+        private BluetoothState connState = BluetoothState.STATE_STANDBY;
+        private ushort ToolCharactaristic;
         public ConnectionManager()
         {
             OpenConnection();
@@ -51,11 +52,21 @@ namespace MKBLE
             bglib.BLEEventConnectionStatus += new Bluegiga.BLE.Events.Connection.StatusEventHandler(this.ConnectionStatusEvent);
             bglib.BLEEventSystemProtocolError += new Bluegiga.BLE.Events.System.ProtocolErrorEventHandler(this.ProtocolErrorEvent);
             bglib.BLEEventATTClientProcedureCompleted += new Bluegiga.BLE.Events.ATTClient.ProcedureCompletedEventHandler(this.ProcedureCompleteEvent);
+            bglib.BLEEventATTClientAttributeValue += bglib_BLEEventATTClientAttributeValue;
+            bglib.BLEEventATTClientFindInformationFound += ClientFindInformationEvent;
+            //bglib.BLEEventATTClientAttributeFound += new Bluegiga
+            bglib.BLEEventATTClientGroupFound += BglibOnBleEventAttClientGroupFound;
             Console.WriteLine("Events Set");
 
         }
 
-        
+        private void ClientFindInformationEvent(object sender, FindInformationFoundEventArgs e)
+        {
+            Console.WriteLine(String.Format("UUID = {0} and Charactaristic Handle = {1}", ByteArrayToHexString(e.uuid), e.chrhandle));
+            //TODO if we do things right we will get the tool charactaristiic handle here
+            ToolCharactaristic = e.chrhandle;
+        }
+
 
         public void Scan()
         {
@@ -90,8 +101,54 @@ namespace MKBLE
         private void ProcedureCompleteEvent(object sender, ProcedureCompletedEventArgs e)
         {
             Console.WriteLine(String.Format("Got response from tool {0}", e.result));
+            //
+            //TODO check if we just found services. If so, find attributes for that service
+            //We can track globally for getting shit done, or per tool
+            //use e.connection. That is the key for the dictionary
+            if (connState == BluetoothState.STATE_FINDING_SERVICES)
+            {
+                Byte[] cmd = bglib.BLECommandATTClientFindInformation(e.connection, 1, 6);
+                // TODO hook this event
+                
+                bglib.SendCommand(serialAPI, cmd);
+                connState = BluetoothState.STATE_FINDING_ATTRIBUTES;
+                Console.WriteLine("getting attributes");
+            }
+
+            //TODO check if we just found attributes. If so write to the attribute
+            /*t.ConnectionHandle = e.connection;
+            Byte[] cmd = bglib.BLECommandATTClientAttributeWrite(t.ConnectionHandle, 0, new byte[] {0x01});
+            bglib.SendCommand(serialAPI, cmd);*/
+            if (connState == BluetoothState.STATE_FINDING_ATTRIBUTES)
+            {
+                //TODO replace e.connection with the tool connection. pull tool out based on e.connection
+                //Also the payload has to mean something, like identify tool
+                Byte[] payload = {0x01};
+                Byte[] cmd = bglib.BLECommandATTClientAttributeWrite(e.connection, ToolCharactaristic, payload);
+                bglib.SendCommand(serialAPI, cmd);
+                connState = BluetoothState.STATE_SENDING_COMMAND;
+            }
         }
-        
+
+        void bglib_BLEEventATTClientAttributeValue(object sender, AttributeValueEventArgs e)
+        {
+            //TODO once we write to the attribute and the too updates we should get notified here
+            throw new NotImplementedException();
+        }
+
+        private void BglibOnBleEventAttClientGroupFound(object sender, GroupFoundEventArgs e)
+        {
+            String log = String.Format("ble_evt_attclient_group_found: connection={0}, start={1}, end={2}, uuid=[ {3}]" + Environment.NewLine,
+               e.connection,
+               e.start,
+               e.end,
+               ByteArrayToHexString(e.uuid)
+               );
+            Console.WriteLine(log);
+            Console.WriteLine(String.Format("Servics start {0} and end {1}", e.start, e.end));
+            connState = BluetoothState.STATE_FINDING_SERVICES;
+
+        }
 
         public void SystemBootEvent(object sender, Bluegiga.BLE.Events.System.BootEventArgs e)
         {
