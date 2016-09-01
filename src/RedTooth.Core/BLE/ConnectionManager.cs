@@ -58,10 +58,11 @@ namespace MKBLE
                                 System.IO.Ports.SerialDataReceivedEventArgs e)
         {
             System.IO.Ports.SerialPort sp = (System.IO.Ports.SerialPort)sender;
-            Byte[] inData = new Byte[sp.BytesToRead];
+            var bytesToRead = sp.BytesToRead;
+            var inData = new Byte[bytesToRead];
 
             // read all available bytes from serial port in one chunk
-            sp.Read(inData, 0, sp.BytesToRead);
+            var bytesRead = sp.Read(inData, 0, bytesToRead);
 
             // DEBUG: display bytes read
             //Console.WriteLine("<= RX ({0}) [ {1}]", inData.Length, ByteArrayToHexString(inData));
