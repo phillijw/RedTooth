@@ -23,6 +23,8 @@ namespace RedTooth.UIApp
         public MainWindow()
         {
             InitializeComponent();
+
+
         }
     }
 }
