@@ -12,11 +12,11 @@ namespace RedTooth.Core.Controller
 {
     public class ToolControler
     {
-
+        private ConnectionManager cm;
         public ToolControler()
         {
             //Conn
-            ConnectionManager cm = new ConnectionManager();
+            cm = new ConnectionManager();
         }
 
         public SortedDictionary<int, String> AllMpbid(int SortSelector = 0)
@@ -26,7 +26,16 @@ namespace RedTooth.Core.Controller
 
         public SortedDictionary<int, Tool> AllTools(int SortSelector = 0)
         {
-            return new SortedDictionary<int, Tool>();
+            Dictionary<String, Tool> allTools = cm.localTools;
+            SortedDictionary<int, Tool> returnTools = new SortedDictionary<int, Tool>();
+            foreach (var tool in allTools)
+            {
+
+                returnTools.Add(tool.Value.ID, tool.Value);
+            }
+
+            return returnTools;
+            
         }
         
 

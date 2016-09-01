@@ -14,9 +14,10 @@ namespace RedTooth.App
         {
 
             ToolControler tc = new ToolControler();
+            
+
+            System.Threading.Thread.Sleep(1000);
             SortedDictionary<int, Tool> tools = tc.AllTools();
-
-
             //ConnectionManager cm = new ConnectionManager();
 
             //cm.OpenConnection();

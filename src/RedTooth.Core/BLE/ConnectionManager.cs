@@ -181,10 +181,20 @@ namespace MKBLE
                     Console.WriteLine("Tool not found on connection!");
                     return;
                 }
-                t.ConnectionHandle = e.connection;
-                Byte[] cmd = bglib.BLECommandATTClientAttributeWrite(t.ConnectionHandle, 0, new byte[] {0x01});
+
+                // connected, now perform service discovery
+                connection_handle = e.connection;
+                
+                Byte[] cmd = bglib.BLECommandATTClientReadByGroupType(e.connection, 0x0001, 0xFFFF, new Byte[] { 0x00, 0x28 }); // "service" UUID is 0x2800 (little-endian for UUID uint8array)
+                // DEBUG: display bytes written
+                
                 bglib.SendCommand(serialAPI, cmd);
-                Console.WriteLine("Wrote Command");
+                Console.WriteLine("Connected now discovering services");
+
+                //t.ConnectionHandle = e.connection;
+                //Byte[] cmd = bglib.BLECommandATTClientAttributeWrite(t.ConnectionHandle, 0, new byte[] {0x01});
+                //bglib.SendCommand(serialAPI, cmd);
+                //Console.WriteLine("Wrote Command");
                 //Byte[] cmd = bglib.BLECommandATTClientAttributeWrite(e.connection, att_handle_measurement_ccc, new Byte[] { 0x02, 0x00 });
                 //// DEBUG: display bytes written
                 //ThreadSafeDelegate(delegate { txtLog.AppendText(String.Format("=> TX ({0}) [ {1}]", cmd.Length, ByteArrayToHexString(cmd)) + Environment.NewLine); });
