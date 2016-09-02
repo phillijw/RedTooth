@@ -60,12 +60,7 @@ namespace MKBLE
 
         }
 
-        private void ClientFindInformationEvent(object sender, FindInformationFoundEventArgs e)
-        {
-            Console.WriteLine(String.Format("UUID = {0} and Charactaristic Handle = {1}", ByteArrayToHexString(e.uuid), e.chrhandle));
-            //TODO if we do things right we will get the tool charactaristiic handle here
-            ToolCharactaristic = e.chrhandle;
-        }
+
 
 
         public void Scan()
@@ -98,57 +93,7 @@ namespace MKBLE
                 bglib.Parse(inData[i]);
             }
         }
-        private void ProcedureCompleteEvent(object sender, ProcedureCompletedEventArgs e)
-        {
-            Console.WriteLine(String.Format("Got response from tool {0}", e.result));
-            //
-            //TODO check if we just found services. If so, find attributes for that service
-            //We can track globally for getting shit done, or per tool
-            //use e.connection. That is the key for the dictionary
-            if (connState == BluetoothState.STATE_FINDING_SERVICES)
-            {
-                Byte[] cmd = bglib.BLECommandATTClientFindInformation(e.connection, 1, 6);
-                // TODO hook this event
-                
-                bglib.SendCommand(serialAPI, cmd);
-                connState = BluetoothState.STATE_FINDING_ATTRIBUTES;
-                Console.WriteLine("getting attributes");
-            }
-
-            //TODO check if we just found attributes. If so write to the attribute
-            /*t.ConnectionHandle = e.connection;
-            Byte[] cmd = bglib.BLECommandATTClientAttributeWrite(t.ConnectionHandle, 0, new byte[] {0x01});
-            bglib.SendCommand(serialAPI, cmd);*/
-            if (connState == BluetoothState.STATE_FINDING_ATTRIBUTES)
-            {
-                //TODO replace e.connection with the tool connection. pull tool out based on e.connection
-                //Also the payload has to mean something, like identify tool
-                Byte[] payload = {0x01};
-                Byte[] cmd = bglib.BLECommandATTClientAttributeWrite(e.connection, ToolCharactaristic, payload);
-                bglib.SendCommand(serialAPI, cmd);
-                connState = BluetoothState.STATE_SENDING_COMMAND;
-            }
-        }
-
-        void bglib_BLEEventATTClientAttributeValue(object sender, AttributeValueEventArgs e)
-        {
-            //TODO once we write to the attribute and the too updates we should get notified here
-            throw new NotImplementedException();
-        }
-
-        private void BglibOnBleEventAttClientGroupFound(object sender, GroupFoundEventArgs e)
-        {
-            String log = String.Format("ble_evt_attclient_group_found: connection={0}, start={1}, end={2}, uuid=[ {3}]" + Environment.NewLine,
-               e.connection,
-               e.start,
-               e.end,
-               ByteArrayToHexString(e.uuid)
-               );
-            Console.WriteLine(log);
-            Console.WriteLine(String.Format("Servics start {0} and end {1}", e.start, e.end));
-            connState = BluetoothState.STATE_FINDING_SERVICES;
-
-        }
+        
 
         public void SystemBootEvent(object sender, Bluegiga.BLE.Events.System.BootEventArgs e)
         {
@@ -241,27 +186,78 @@ namespace MKBLE
 
                 // connected, now perform service discovery
                 connection_handle = e.connection;
-                
-                Byte[] cmd = bglib.BLECommandATTClientReadByGroupType(e.connection, 0x0001, 0xFFFF, new Byte[] { 0x00, 0x28 }); // "service" UUID is 0x2800 (little-endian for UUID uint8array)
+                //TODO I don't know if 00, 28 is correct here. If that is generic "give me all services"
+                //Updated to 28 03 based on bluegiga post
+                Byte[] cmd = bglib.BLECommandATTClientReadByGroupType(e.connection, 0x0001, 0xFFFF, new Byte[] { 0x03, 0x28 }); // "service" UUID is 0x2800 (little-endian for UUID uint8array)
                 // DEBUG: display bytes written
                 
                 bglib.SendCommand(serialAPI, cmd);
                 Console.WriteLine("Connected now discovering services");
 
-                //t.ConnectionHandle = e.connection;
-                //Byte[] cmd = bglib.BLECommandATTClientAttributeWrite(t.ConnectionHandle, 0, new byte[] {0x01});
-                //bglib.SendCommand(serialAPI, cmd);
-                //Console.WriteLine("Wrote Command");
-                //Byte[] cmd = bglib.BLECommandATTClientAttributeWrite(e.connection, att_handle_measurement_ccc, new Byte[] { 0x02, 0x00 });
-                //// DEBUG: display bytes written
-                //ThreadSafeDelegate(delegate { txtLog.AppendText(String.Format("=> TX ({0}) [ {1}]", cmd.Length, ByteArrayToHexString(cmd)) + Environment.NewLine); });
-                
-
-                //while (bglib.IsBusy()) ;
-
-                // update state
-                //app_state = STATE_FINDING_SERVICES;
+              
             }
+        }
+
+        /*******************
+         * Tool response events
+         *///////////////////
+        private void ProcedureCompleteEvent(object sender, ProcedureCompletedEventArgs e)
+        {
+            Console.WriteLine(String.Format("Got response from tool {0}", e.result));
+            //
+            //TODO remove the 1,5. I just made that up
+            //2,3 doesn't error
+            //We can track globally for getting shit done, or per tool
+            //use e.connection. That is the key for the dictionary
+            if (connState == BluetoothState.STATE_FINDING_SERVICES)
+            {
+                Byte[] cmd = bglib.BLECommandATTClientFindInformation(e.connection, 2,3);
+
+                bglib.SendCommand(serialAPI, cmd);
+                
+                Console.WriteLine("getting attributes");
+            }
+
+
+            if (connState == BluetoothState.STATE_FINDING_ATTRIBUTES)
+            {
+                //TODO replace e.connection with the tool connection. pull tool out based on e.connection
+                //Also the payload has to mean something, like identify tool
+                Byte[] payload = { 0x01 };
+                Byte[] cmd = bglib.BLECommandATTClientAttributeWrite(e.connection, ToolCharactaristic, payload);
+                bglib.SendCommand(serialAPI, cmd);
+                Console.WriteLine("Wrote data to attribute");
+                connState = BluetoothState.STATE_SENDING_COMMAND;
+            }
+        }
+
+        void bglib_BLEEventATTClientAttributeValue(object sender, AttributeValueEventArgs e)
+        {
+            //TODO once we write to the attribute and the too updates we should get notified here
+            throw new NotImplementedException();
+        }
+
+        private void ClientFindInformationEvent(object sender, FindInformationFoundEventArgs e)
+        {
+            Console.WriteLine(String.Format("UUID = {0} and Charactaristic Handle = {1}", ByteArrayToHexString(e.uuid), e.chrhandle));
+            //TODO if we do things right we will get the tool charactaristiic handle here
+            ToolCharactaristic = e.chrhandle;
+            connState = BluetoothState.STATE_FINDING_ATTRIBUTES;
+        }
+
+        private void BglibOnBleEventAttClientGroupFound(object sender, GroupFoundEventArgs e)
+        {
+            String log = String.Format("ble_evt_attclient_group_found: connection={0}, start={1}, end={2}, uuid=[ {3}]" + Environment.NewLine,
+               e.connection,
+               e.start,
+               e.end,
+               ByteArrayToHexString(e.uuid)
+               );
+            Console.WriteLine(log);
+            //TODO capture start and end for finding the attribute
+            Console.WriteLine(String.Format("Servics start {0} and end {1}", e.start, e.end));
+            connState = BluetoothState.STATE_FINDING_SERVICES;
+
         }
 
         public void ProtocolErrorEvent(object sender, Bluegiga.BLE.Events.System.ProtocolErrorEventArgs e)
