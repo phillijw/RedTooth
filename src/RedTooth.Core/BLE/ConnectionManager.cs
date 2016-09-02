@@ -187,11 +187,18 @@ namespace MKBLE
 
                 // connected, now perform service discovery
                 connection_handle = e.connection;
-                //TODO I don't know if 00, 28 is correct here. If that is generic "give me all services"
-                //Updated to 28 03 based on bluegiga post
-                Byte[] cmd = bglib.BLECommandATTClientReadByGroupType(e.connection, 0x0001, 0xFFFF, new Byte[] { 0x03, 0x28 }); // "service" UUID is 0x2800 (little-endian for UUID uint8array)
-                // DEBUG: display bytes written
-                
+
+                byte[] payload = new byte[] {
+                    0x01, //Message type -- LOCAL_MEM_ACCESS (write)
+                    0x01, //Sequence ID
+                    0x03, //Data length
+                    0xA0, 0x23, //Local data address
+                    0x01, //Data to write
+                    0x00, //Checksum MSB
+                    0xc9 //Checksum LSB
+                };
+                Byte[] cmd = bglib.BLECommandATTClientAttributeWrite(e.connection, 0x000F, payload);
+
                 bglib.SendCommand(serialAPI, cmd);
                 Console.WriteLine("Connected now discovering services");
 
