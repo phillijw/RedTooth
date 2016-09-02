@@ -268,6 +268,7 @@ namespace MKBLE
 
         public void ConnectToTool(Tool t)
         {
+            Console.WriteLine("Connecting to tool: " + t.MPBID);
             Byte[] cmd = bglib.BLECommandGAPConnectDirect(t.BluetoothAddress, t.AddressType, 0x20, 0x30, 0x100, 0);
             bglib.SendCommand(serialAPI, cmd);
             t.BLEState = BluetoothState.STATE_CONNECTING;
