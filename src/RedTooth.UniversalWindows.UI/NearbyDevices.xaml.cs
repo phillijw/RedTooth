@@ -154,14 +154,17 @@ namespace RedTooth.UniversalWindows.UI
             // Serialize UI update to the main UI thread
             await this.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
             {
-                // Display these information on the list
-                ReceivedAdvertisementListBox.Items.Add(new ToolViewModel
+                if (!ReceivedAdvertisementListBox.Items.Any(x => (x as ToolViewModel).MPBID.Equals(manufacturerDataString)))
                 {
-                    BluetoothAddress = eventArgs.BluetoothAddress.ToString(),
-                    MPBID = manufacturerDataString,
-                    Name = ProductData.LookupProductName(manufacturerDataString),
-                    RSSI = eventArgs.RawSignalStrengthInDBm
-                });
+                    // Display these information on the list
+                    ReceivedAdvertisementListBox.Items.Add(new ToolViewModel
+                    {
+                        BluetoothAddress = eventArgs.BluetoothAddress.ToString(),
+                        MPBID = manufacturerDataString,
+                        Name = ProductData.LookupProductName(manufacturerDataString),
+                        RSSI = eventArgs.RawSignalStrengthInDBm
+                    });
+                }                
             });               
         }
 
@@ -176,6 +179,10 @@ namespace RedTooth.UniversalWindows.UI
             await this.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
             {
                 rootPage.NotifyUser(string.Format("Watcher stopped or aborted: {0}", eventArgs.Error.ToString()), NotifyType.StatusMessage);
+            });
+            await this.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+            {
+                    ReceivedAdvertisementListBox.Items.Clear();                
             });
         }
         

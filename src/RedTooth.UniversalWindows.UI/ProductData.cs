@@ -57,9 +57,7 @@ namespace RedTooth.UniversalWindows.UI
         {
             string ProductName = "";
             var products = LoadProductData();
-            var ProductId = int.Parse(MPBID.Substring(0,4),System.Globalization.NumberStyles.HexNumber);
-                        
-            //var ProductId = Encoding.UTF8.GetBytes(hexValue);            
+            var ProductId = int.Parse(MPBID.Substring(0,4),System.Globalization.NumberStyles.HexNumber);                            
 
             if (products.ContainsKey(ProductId))
             {

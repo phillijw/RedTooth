@@ -28,7 +28,7 @@ namespace RedTooth.UIApp
         public MainWindow()
         {
             var nearbyDevices = new List<Tool>();
-            //var nearbyDevicesController = new ToolController();
+            var nearbyDevicesController = new ToolController();
             InitializeComponent();
         }
 
@@ -36,6 +36,7 @@ namespace RedTooth.UIApp
         {
             var tools = ToolController.MockTools().Select(x => new ToolViewModel
             {
+                 ID=x.Key,
                  BluetoothAddress=ToolController.ByteArrayToString(x.Value.BluetoothAddress),
                  MPBID=x.Value.MPBID,
                  Name=x.Value.Name,
@@ -48,9 +49,8 @@ namespace RedTooth.UIApp
         {
             var tool = nearbyDevicesListBox.SelectedItem as ToolViewModel;
             if (tool != null)
-            {
-                var address = int.Parse(tool.BluetoothAddress, NumberStyles.HexNumber);
-                var connected = nearbyDevicesController.Connect(address);
+            {                
+                var connected = nearbyDevicesController.SendCommand(tool.ID);
                 if (connected)
                 {
                     MessageBox.Show("Connected!");

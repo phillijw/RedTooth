@@ -8,6 +8,7 @@ namespace RedTooth.UIApp
 {
     public class ToolViewModel
     {
+        public int ID { get; set; }
         public string Name { get; set; }
         public string BluetoothAddress { get; set; }        
         public string MPBID { get; set; }        
