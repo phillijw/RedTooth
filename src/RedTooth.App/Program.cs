@@ -12,23 +12,15 @@ namespace RedTooth.App
     {
         static void Main(string[] args)
         {
+            SortedDictionary<int, Tool> allTools;
 
-            //ToolControler tc = new ToolControler();
+            using (var tc = new ToolController())
+            {
+                allTools = tc.AllTools();
+                Console.WriteLine("Press the any key to exit");
+                Console.Read();
+            }
             
-
-            //System.Threading.Thread.Sleep(1000);
-            //SortedDictionary<int, Tool> tools = tc.AllTools();
-            ConnectionManager cm = new ConnectionManager();
-
-            //cm.OpenConnection();
-            //cm.Scan();
-
-            
-            //cm.OpenConnection();
-            //cm.Scan();
-
-            Console.Read();
-            cm.ResetAll();
         }
     }
 }
