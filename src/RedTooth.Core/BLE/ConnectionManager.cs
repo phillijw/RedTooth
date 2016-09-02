@@ -353,6 +353,11 @@ namespace MKBLE
 
         public void Dispose()
         {
+            Reset();
+        }
+
+        public void Reset()
+        {
             // stop everything we're doing, if possible
             Byte[] cmd;
 

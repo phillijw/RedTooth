@@ -33,6 +33,7 @@ namespace RedTooth.Core.Controller
 
             foreach (var tool in allTools)
             {
+                tool.Value.Name = LookupProductName(tool.Value.MPBID);
                 _allTools.Add(tool.Value.ID, tool.Value);
             }
 
@@ -55,6 +56,11 @@ namespace RedTooth.Core.Controller
         public void Dispose()
         {
             cm.Dispose();
+        }
+
+        public void Reset()
+        {
+            cm.Reset();
         }
 
         public static SortedDictionary<int, Tool> MockTools(int SortSelector = 0)

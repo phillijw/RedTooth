@@ -28,7 +28,7 @@ namespace RedTooth.UIApp
         public MainWindow()
         {
             var nearbyDevices = new List<Tool>();
-            var nearbyDevicesController = new ToolController();
+            nearbyDevicesController = new ToolController();
             InitializeComponent();
         }
 
@@ -41,7 +41,7 @@ namespace RedTooth.UIApp
                  MPBID=x.Value.MPBID,
                  Name=x.Value.Name,
                  RSSI=x.Value.RSSI
-            });
+            }).OrderByDescending(x => x.RSSI);
             nearbyDevicesListBox.ItemsSource = tools;                        
         }
 
@@ -51,6 +51,7 @@ namespace RedTooth.UIApp
             if (tool != null)
             {                
                 var connected = nearbyDevicesController.SendCommand(tool.ID);
+                
                 if (connected)
                 {
                     MessageBox.Show("Connected!");
