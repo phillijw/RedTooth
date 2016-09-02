@@ -9,8 +9,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RedTooth.App", "RedTooth.Ap
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RedTooth.UIApp", "RedTooth.UIApp\RedTooth.UIApp.csproj", "{09766638-2D19-46E6-A3A4-010F605E4448}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RedTooth.UniversalWindows.UI", "RedTooth.UniversalWindows.UI\RedTooth.UniversalWindows.UI.csproj", "{3ADBA677-EB78-4E24-A047-CBB2CFA7E95B}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -71,28 +69,6 @@ Global
 		{09766638-2D19-46E6-A3A4-010F605E4448}.Release|x64.Build.0 = Release|Any CPU
 		{09766638-2D19-46E6-A3A4-010F605E4448}.Release|x86.ActiveCfg = Release|Any CPU
 		{09766638-2D19-46E6-A3A4-010F605E4448}.Release|x86.Build.0 = Release|Any CPU
-		{3ADBA677-EB78-4E24-A047-CBB2CFA7E95B}.Debug|Any CPU.ActiveCfg = Debug|ARM
-		{3ADBA677-EB78-4E24-A047-CBB2CFA7E95B}.Debug|Any CPU.Build.0 = Debug|ARM
-		{3ADBA677-EB78-4E24-A047-CBB2CFA7E95B}.Debug|Any CPU.Deploy.0 = Debug|ARM
-		{3ADBA677-EB78-4E24-A047-CBB2CFA7E95B}.Debug|ARM.ActiveCfg = Debug|ARM
-		{3ADBA677-EB78-4E24-A047-CBB2CFA7E95B}.Debug|ARM.Build.0 = Debug|ARM
-		{3ADBA677-EB78-4E24-A047-CBB2CFA7E95B}.Debug|ARM.Deploy.0 = Debug|ARM
-		{3ADBA677-EB78-4E24-A047-CBB2CFA7E95B}.Debug|x64.ActiveCfg = Debug|x64
-		{3ADBA677-EB78-4E24-A047-CBB2CFA7E95B}.Debug|x64.Build.0 = Debug|x64
-		{3ADBA677-EB78-4E24-A047-CBB2CFA7E95B}.Debug|x64.Deploy.0 = Debug|x64
-		{3ADBA677-EB78-4E24-A047-CBB2CFA7E95B}.Debug|x86.ActiveCfg = Debug|x86
-		{3ADBA677-EB78-4E24-A047-CBB2CFA7E95B}.Debug|x86.Build.0 = Debug|x86
-		{3ADBA677-EB78-4E24-A047-CBB2CFA7E95B}.Debug|x86.Deploy.0 = Debug|x86
-		{3ADBA677-EB78-4E24-A047-CBB2CFA7E95B}.Release|Any CPU.ActiveCfg = Release|x86
-		{3ADBA677-EB78-4E24-A047-CBB2CFA7E95B}.Release|ARM.ActiveCfg = Release|ARM
-		{3ADBA677-EB78-4E24-A047-CBB2CFA7E95B}.Release|ARM.Build.0 = Release|ARM
-		{3ADBA677-EB78-4E24-A047-CBB2CFA7E95B}.Release|ARM.Deploy.0 = Release|ARM
-		{3ADBA677-EB78-4E24-A047-CBB2CFA7E95B}.Release|x64.ActiveCfg = Release|x64
-		{3ADBA677-EB78-4E24-A047-CBB2CFA7E95B}.Release|x64.Build.0 = Release|x64
-		{3ADBA677-EB78-4E24-A047-CBB2CFA7E95B}.Release|x64.Deploy.0 = Release|x64
-		{3ADBA677-EB78-4E24-A047-CBB2CFA7E95B}.Release|x86.ActiveCfg = Release|x86
-		{3ADBA677-EB78-4E24-A047-CBB2CFA7E95B}.Release|x86.Build.0 = Release|x86
-		{3ADBA677-EB78-4E24-A047-CBB2CFA7E95B}.Release|x86.Deploy.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
