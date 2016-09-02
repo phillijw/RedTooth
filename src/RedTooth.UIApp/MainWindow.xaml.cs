@@ -42,8 +42,7 @@ namespace RedTooth.UIApp
                  MPBID=x.Value.MPBID,
                  Name=x.Value.Name,
                  RSSI=x.Value.RSSI
-            }).OrderBy(x=>x.RSSI);
-
+            }).OrderByDescending(x => x.RSSI);
             nearbyDevicesListBox.ItemsSource = tools;                        
         }
 
@@ -53,6 +52,7 @@ namespace RedTooth.UIApp
             if (tool != null)
             {                
                 var connected = nearbyDevicesController.SendCommand(tool.ID);
+                
                 if (connected)
                 {
                     MessageBox.Show("Connected!");
