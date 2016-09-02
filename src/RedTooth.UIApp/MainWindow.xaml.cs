@@ -34,7 +34,7 @@ namespace RedTooth.UIApp
 
         private void ScanDevices_Click(object sender, RoutedEventArgs e)
         {
-            var tools = ToolController.MockTools().Select(x => new ToolViewModel
+            var tools = nearbyDevicesController.AllTools().Select(x => new ToolViewModel
             {
                  ID=x.Key,
                  BluetoothAddress=ToolController.ByteArrayToString(x.Value.BluetoothAddress),
