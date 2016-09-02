@@ -103,6 +103,7 @@
     <Compile Include="NearbyDevices.xaml.cs">
       <DependentUpon>NearbyDevices.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ProductData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
