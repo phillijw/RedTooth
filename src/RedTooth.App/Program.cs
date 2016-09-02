@@ -21,7 +21,8 @@ namespace RedTooth.App
                 allTools = tc.AllTools();
                 foreach (var tool in allTools)
                 {
-                    if (tool.Value.MPBID == "0007000D36")
+                    if (tool.Value.MPBID == "0007005DF1") //Joe drill
+                  //if (tool.Value.MPBID == "0007000D36") //Chris drill
                         tc.SendCommand(tool.Value.ID);
                 }
                 Console.WriteLine("Press the any key to exit");
