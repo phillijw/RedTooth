@@ -13,6 +13,7 @@ namespace RedTooth.Core.Controller
     public class ToolController : IDisposable
     {
         private ConnectionManager cm;
+        private SortedDictionary<int, Tool> _allTools = new SortedDictionary<int, Tool>();
         public ToolController()
         {
             //Conn
@@ -28,14 +29,14 @@ namespace RedTooth.Core.Controller
         public SortedDictionary<int, Tool> AllTools(int SortSelector = 0)
         {
             Dictionary<String, Tool> allTools = cm.localTools;
-            var returnTools = new SortedDictionary<int, Tool>();
+            _allTools = new SortedDictionary<int, Tool>();
 
             foreach (var tool in allTools)
             {
-                returnTools.Add(tool.Value.ID, tool.Value);
+                _allTools.Add(tool.Value.ID, tool.Value);
             }
 
-            return returnTools;
+            return _allTools;
         }
 
         public bool Connect(int toolID)
@@ -46,6 +47,8 @@ namespace RedTooth.Core.Controller
         //for now just send the tool ID and we will hardcode the command. We could provide a menu later.
         public bool SendCommand(int toolID)
         {
+            Tool toolToConnect = _allTools[toolID];
+            cm.ConnectToTool(toolToConnect);
             return true;
         }
 
