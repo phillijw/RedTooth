@@ -29,16 +29,14 @@ namespace RedTooth.Core.Controller
         {
             Dictionary<String, Tool> allTools = cm.localTools;
             var returnTools = new SortedDictionary<int, Tool>();
-            
+
             foreach (var tool in allTools)
             {
                 returnTools.Add(tool.Value.ID, tool.Value);
             }
 
             return returnTools;
-            
         }
-        
 
         public bool Connect(int toolID)
         {
@@ -54,6 +52,38 @@ namespace RedTooth.Core.Controller
         public void Dispose()
         {
             cm.Dispose();
+        }
+
+        public static SortedDictionary<int, Tool> MockTools(int SortSelector = 0)
+        {
+            var tools = new SortedDictionary<int, Tool>();
+            var numGen = new Random(5000);
+
+            byte[] bytes = new byte[256];
+            numGen.NextBytes(bytes);
+
+            for (int i = 0; i < 10; ++i)
+            {
+                var tool = new Tool
+                {
+                    AddressType = bytes[i],
+                    BLEState = BluetoothState.STATE_SCANNING,
+                    BluetoothAddress = bytes.Take(8).ToArray(),
+                    ConnectionHandle = bytes[i + 1],
+                    ID = i,
+                    MPBID = bytes.Take(32).ToString(),
+                    RSSI = numGen.Next()
+                };
+                tool.Name = LookupProductName(tool.MPBID);
+                tools.Add(i, tool);
+            }
+
+            return tools;
+        }
+
+        private static string LookupProductName(string MPBID)
+        {
+            return String.Empty;
         }
     }
 }

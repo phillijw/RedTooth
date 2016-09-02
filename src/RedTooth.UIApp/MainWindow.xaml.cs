@@ -1,4 +1,6 @@
-﻿using System;
+﻿using RedTooth.Core.Controller;
+using RedTooth.Core.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,11 +22,20 @@ namespace RedTooth.UIApp
     /// </summary>
     public partial class MainWindow : Window
     {
+        private IList<Tool> nearbyDevices;
+        private ToolController nearbyDevicesController;
+
         public MainWindow()
         {
+            var nearbyDevices = new List<Tool>();
+            //var nearbyDevicesController = new ToolController();
             InitializeComponent();
+        }
 
-
+        private void ScanDevices_Click(object sender, RoutedEventArgs e)
+        {
+            var tools = ToolController.MockTools();
+            nearbyDevicesListBox.ItemsSource = tools;            
         }
     }
 }

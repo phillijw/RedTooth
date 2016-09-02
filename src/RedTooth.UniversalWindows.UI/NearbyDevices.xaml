@@ -16,9 +16,7 @@
             </Grid.RowDefinitions>
             <StackPanel Margin="0,0,0,10">
                 <TextBlock Style="{StaticResource ScenarioDescriptionTextStyle}" TextWrapping="Wrap">
-                    Scanning for a particular LE advertisement containing a matching manufacturer data section and 
-                    above a certain RSSI threshold. This scenario requires Scenario 2 or 4 to run on another Windows platform
-                    in close proximity of this one. Press Run button to begin scanning. Received advertisements are shown below.
+                    Scanning for a BLE Milwaukee OneKey Tools Press Run button to begin scanning. Received BLE advertisements are shown below.
                 </TextBlock>
             </StackPanel>
 
@@ -41,7 +39,7 @@
                             Grid.ColumnSpan="2"
                             HorizontalAlignment="Stretch"
                             VerticalAlignment="Top"
-                            Height="300"
+                            Height="Auto"
                             Margin="0,10,0,0"
                             ScrollViewer.HorizontalScrollBarVisibility="Auto"
                             ScrollViewer.HorizontalScrollMode="Auto"/>

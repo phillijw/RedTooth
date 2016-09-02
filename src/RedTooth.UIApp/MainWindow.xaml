@@ -7,6 +7,28 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525">
     <Window.Resources>
+        <DataTemplate x:Key="listBoxTemplate">
+            <StackPanel Margin="3">
+                <DockPanel >
+                  <TextBlock FontWeight="Bold" Text="Bluetooth Address:"
+                  DockPanel.Dock="Left"
+                  Margin="5,0,10,0"/>
+                    <TextBlock Text="  " />
+                    <TextBlock Text="{Binding Bluet}" Foreground="Green" FontWeight="Bold" />
+                </DockPanel>
+                <DockPanel >
+                    <TextBlock FontWeight="Bold" Text="Address:" Foreground ="DarkOrange" 
+                  DockPanel.Dock="Left"
+                  Margin="5,0,5,0"/>
+                    <TextBlock Text="{Binding Address}" />
+                    <TextBlock Text=", " />
+                    <TextBlock Text="{Binding City}" />
+                    <TextBlock Text=", " />
+                    <TextBlock Text="{Binding Country}" />
+                </DockPanel>
+            </StackPanel>
+        </DataTemplate>
+
         <Storyboard x:Key="OnClick1">
             <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleX)" Storyboard.TargetName="separator">
                 <EasingDoubleKeyFrame KeyTime="0" Value="0.888"/>
@@ -54,7 +76,7 @@
     </Window.Triggers>
     <Grid>
         <UniformGrid Margin="180.496,5.473,10,16.078">
-            <ListBox x:Name="listBox" Margin="0,34.728,-217.669,-164.238" RenderTransformOrigin="0.5,0.5">
+            <ListBox x:Name="nearbyDevicesListBox" Margin="0,34.728,-217.669,-164.238" RenderTransformOrigin="0.5,0.5">
                 <ListBox.RenderTransform>
                     <TransformGroup>
                         <ScaleTransform/>
@@ -97,7 +119,7 @@
                 </TransformGroup>
             </Separator.RenderTransform>
         </Separator>
-        <Button x:Name="button1" Content="Scan&#xD;&#xA;Devices" HorizontalAlignment="Left" Height="49.923" Margin="32.357,82.527,0,0" VerticalAlignment="Top" Width="90.077" RenderTransformOrigin="0.5,0.5">
+        <Button x:Name="ScanDevices" Content="Scan&#xD;&#xA;Devices" HorizontalAlignment="Left" Height="49.923" Margin="32.357,82.527,0,0" VerticalAlignment="Top" Width="90.077" RenderTransformOrigin="0.5,0.5" Click="ScanDevices_Click">
             <Button.RenderTransform>
                 <TransformGroup>
                     <ScaleTransform/>

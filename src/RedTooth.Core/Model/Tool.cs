@@ -18,6 +18,7 @@ namespace RedTooth.Core.Model
 
     public class Tool
     {
+        public string Name { get; set; }
         public String MPBID { get; set; }
         public Byte[] BluetoothAddress { get; set; }
         public int ID { get; set; }
