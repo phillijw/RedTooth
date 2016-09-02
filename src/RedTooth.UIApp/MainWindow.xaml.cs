@@ -58,7 +58,11 @@ namespace RedTooth.UIApp
                 else {
                     MessageBox.Show("Failed!");
                 }
-            }                       
+            }
+            else
+            {
+                MessageBox.Show("SELECT A TOOL!");
+            }
         }        
     }
 }

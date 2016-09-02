@@ -159,7 +159,7 @@ namespace RedTooth.UniversalWindows.UI
                 {
                     BluetoothAddress = eventArgs.BluetoothAddress.ToString(),
                     MPBID = manufacturerDataString,
-                    Name = "FUEL G2 Drill Driver w/Bluetooth",
+                    Name = ProductData.LookupProductName(manufacturerDataString),
                     RSSI = eventArgs.RawSignalStrengthInDBm
                 });
             });               

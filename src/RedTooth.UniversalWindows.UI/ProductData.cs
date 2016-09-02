@@ -6,12 +6,11 @@ using System.Threading.Tasks;
 
 namespace RedTooth.UniversalWindows.UI
 {
-    public class ProductData
-    {
-        public Dictionary<int, string> products { get; }
-        public ProductData()
+    public static class ProductData
+    {        
+        private static Dictionary<int, string> LoadProductData()
         {
-            products = new Dictionary<int, string>
+            return new Dictionary<int, string>
             {
                 {1,"Compact Brushless Drill Driver"},
                 {3,"Compact Brushless Impact Driver"},
@@ -52,6 +51,26 @@ namespace RedTooth.UniversalWindows.UI
                 {46,"M18 Battery Pack 6.0Ahr XC"},
                 {47,"M18 Battery Pack 9.0Ahr HD"}
             };
+            
+        }
+        public static string LookupProductName(string MPBID)
+        {
+            string ProductName = "";
+            var products = LoadProductData();
+            var ProductId = int.Parse(MPBID.Substring(0,4),System.Globalization.NumberStyles.HexNumber);
+                        
+            //var ProductId = Encoding.UTF8.GetBytes(hexValue);            
+
+            if (products.ContainsKey(ProductId))
+            {
+                ProductName = products[ProductId];
+            }
+            return ProductName;
+        }
+        public static string ByteArrayToString(byte[] ba)
+        {
+            string hex = BitConverter.ToString(ba);
+            return hex.Replace("-", "");
         }
     }
 }

@@ -85,7 +85,7 @@ namespace RedTooth.Core.Controller
         {
             string ProductName = "";
 
-            int ProductId = Convert.ToInt16(ByteArrayToString(Encoding.UTF8.GetBytes(MPBID).Take(2).ToArray()));
+            int ProductId = int.Parse(MPBID.Substring(0, 4), System.Globalization.NumberStyles.HexNumber);
 
             Dictionary<int, string> products = new Dictionary<int, string>
             {
