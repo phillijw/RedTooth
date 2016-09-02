@@ -140,7 +140,7 @@
                 </TransformGroup>
             </Button.RenderTransform>
         </Button>
-        <ComboBox x:Name="comboBox" HorizontalAlignment="Left" Margin="36.698,153.612,0,144.14" Width="86.821" RenderTransformOrigin="0.5,0.5">
+        <ComboBox x:Name="comboBox" HorizontalAlignment="Left" Margin="32.357,152.612,0,145.14" Width="90.077" RenderTransformOrigin="0.5,0.5">
             <ComboBox.RenderTransform>
                 <TransformGroup>
                     <ScaleTransform/>
