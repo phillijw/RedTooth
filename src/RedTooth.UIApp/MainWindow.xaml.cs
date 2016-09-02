@@ -22,8 +22,7 @@ namespace RedTooth.UIApp
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
-    {
-        private IList<Tool> nearbyDevices;
+    {        
         private ToolController nearbyDevicesController;
 
         public MainWindow()
@@ -44,5 +43,22 @@ namespace RedTooth.UIApp
             });
             nearbyDevicesListBox.ItemsSource = tools;                        
         }
+
+        private void Connect_Click(object sender, RoutedEventArgs e)
+        {
+            var tool = nearbyDevicesListBox.SelectedItem as ToolViewModel;
+            if (tool != null)
+            {
+                var address = int.Parse(tool.BluetoothAddress, NumberStyles.HexNumber);
+                var connected = nearbyDevicesController.Connect(address);
+                if (connected)
+                {
+                    MessageBox.Show("Connected!");
+                }
+                else {
+                    MessageBox.Show("Failed!");
+                }
+            }                       
+        }        
     }
 }

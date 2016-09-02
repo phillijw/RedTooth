@@ -68,10 +68,10 @@ namespace RedTooth.Core.Controller
                 {
                     AddressType = bytes[i],
                     BLEState = BluetoothState.STATE_SCANNING,
-                    BluetoothAddress = bytes.Take(8).ToArray(),
+                    BluetoothAddress = bytes.Take(4).ToArray(),
                     ConnectionHandle = bytes[i + 1],
                     ID = i,
-                    MPBID = ByteArrayToString(bytes.Take(8).ToArray()),
+                    MPBID = ByteArrayToString(bytes.Take(4).ToArray()),
                     RSSI = numGen.Next()
                 };
                 tool.Name = LookupProductName(tool.MPBID);

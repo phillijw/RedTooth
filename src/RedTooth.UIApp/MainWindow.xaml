@@ -11,28 +11,31 @@
             <StackPanel Margin="3">
                 <DockPanel >
                   <TextBlock FontWeight="Bold" Text="Name:"
-                  DockPanel.Dock="Left"
-                  Margin="5,0,10,0"/>
+                        DockPanel.Dock="Left"
+                        Margin="5,0,10,0"/>
                     <TextBlock Text="  " />
-                    <TextBlock Text="{Binding Name}" Foreground="Green" FontWeight="Bold" />
+                    <TextBlock Text="{Binding Name}" Foreground="Red" FontWeight="Bold" />
                 </DockPanel>
                 <DockPanel >
-                    <TextBlock FontWeight="Bold" Text="Bluetooth Address:" Foreground ="DarkOrange" 
-                  DockPanel.Dock="Left"
-                  Margin="5,0,5,0" />
-                    <TextBlock Text="{Binding BluetoothAddress}"/>
+                    <TextBlock FontWeight="Bold" Text="Bluetooth Address:" 
+                        DockPanel.Dock="Left"
+                        Margin="5,0,5,0" />
+                    <TextBlock Text="{Binding BluetoothAddress}" Foreground="Red" />
                 </DockPanel>
                 <DockPanel>
-                    <TextBlock FontWeight="Bold" Text="MPBID:" Foreground ="DarkRed"  
-                  DockPanel.Dock="Left"
-                  Margin="5,0,5,0"/>
-                    <TextBlock Text="{Binding MPBID}" />
+                    <TextBlock FontWeight="Bold" Text="MPBID:" 
+                        DockPanel.Dock="Left"
+                        Margin="5,0,5,0"/>
+                    <TextBlock Text="{Binding MPBID}" Foreground="Red"  />
                 </DockPanel>
                 <DockPanel>
-                    <TextBlock FontWeight="Bold" Text="RSSI:" Foreground ="DarkRed"  
-                  DockPanel.Dock="Left"
-                  Margin="5,0,5,0"/>
-                    <TextBlock Text="{Binding RSSI}" />
+                    <TextBlock FontWeight="Bold" Text="RSSI:"   
+                        DockPanel.Dock="Left"
+                        Margin="5,0,5,0"/>
+                    <TextBlock Text="{Binding RSSI}" Foreground="Red" />                    
+                </DockPanel>
+                <DockPanel>
+                    <Button Name="Connect" Content="Connect" Click="Connect_Click" />
                 </DockPanel>
             </StackPanel>
         </DataTemplate>
