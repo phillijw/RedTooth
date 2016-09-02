@@ -16,7 +16,14 @@ namespace RedTooth.App
 
             using (var tc = new ToolController())
             {
+                System.Threading.Thread.Sleep(1000);
+
                 allTools = tc.AllTools();
+                foreach (var tool in allTools)
+                {
+                    if (tool.Value.MPBID == "0007000D36")
+                        tc.SendCommand(tool.Value.ID);
+                }
                 Console.WriteLine("Press the any key to exit");
                 Console.Read();
             }

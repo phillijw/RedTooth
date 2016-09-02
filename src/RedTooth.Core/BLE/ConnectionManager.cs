@@ -145,7 +145,7 @@ namespace MKBLE
                     {
                         Console.WriteLine("Found 5698-----------------------------------");
                         //Connect
-                        ConnectToTool(t);
+                        //ConnectToTool(t);
                         
                     }
                         
@@ -155,6 +155,9 @@ namespace MKBLE
             //Console.Write(log);
             Debug.Print(log);
         }
+
+       
+            
 
         public void ConnectionStatusEvent(object sender, Bluegiga.BLE.Events.Connection.StatusEventArgs e)
         {
@@ -221,8 +224,8 @@ namespace MKBLE
             {
                 //TODO replace e.connection with the tool connection. pull tool out based on e.connection
                 //Also the payload has to mean something, like identify tool
-                Byte[] payload = { 0x01 };
-                Byte[] cmd = bglib.BLECommandATTClientAttributeWrite(e.connection, ToolCharactaristic, payload);
+                Byte[] payload = { 0x01, 0x01, 0x01, 0xA0, 0x23, 0x01, 0x00, 0xc7 };
+                Byte[] cmd = bglib.BLECommandATTClientAttributeWrite(e.connection, 0x000F, payload);
                 bglib.SendCommand(serialAPI, cmd);
                 Console.WriteLine("Wrote data to attribute");
                 connState = BluetoothState.STATE_SENDING_COMMAND;
@@ -263,7 +266,7 @@ namespace MKBLE
             Console.WriteLine("Error!!!!!!!!!!!!!!!!!!!!!!");
         }
 
-        private void ConnectToTool(Tool t)
+        public void ConnectToTool(Tool t)
         {
             Byte[] cmd = bglib.BLECommandGAPConnectDirect(t.BluetoothAddress, t.AddressType, 0x20, 0x30, 0x100, 0);
             bglib.SendCommand(serialAPI, cmd);
