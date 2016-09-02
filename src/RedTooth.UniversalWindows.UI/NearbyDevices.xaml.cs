@@ -149,16 +149,20 @@ namespace RedTooth.UniversalWindows.UI
                 reader.ReadBytes(data);
             }
             // Print the company ID + the raw data in hex format
-            manufacturerDataString = ParseMPBID(data);                               
-            
+            manufacturerDataString = ParseMPBID(data);
+
             // Serialize UI update to the main UI thread
             await this.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
             {
                 // Display these information on the list
-                ReceivedAdvertisementListBox.Items.Add(string.Format("BluetoothAddress: [{0}]       MPBID: [{1}]",
-                    eventArgs.BluetoothAddress.ToString(),
-                    manufacturerDataString));
-            });
+                ReceivedAdvertisementListBox.Items.Add(new ToolViewModel
+                {
+                    BluetoothAddress = eventArgs.BluetoothAddress.ToString(),
+                    MPBID = manufacturerDataString,
+                    Name = "FUEL G2 Drill Driver w/Bluetooth",
+                    RSSI = eventArgs.RawSignalStrengthInDBm
+                });
+            });               
         }
 
         /// <summary>
