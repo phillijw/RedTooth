@@ -27,13 +27,14 @@ namespace RedTooth.UIApp
 
         public MainWindow()
         {
-            var nearbyDevices = new List<Tool>();
-            var nearbyDevicesController = new ToolController();
             InitializeComponent();
+            nearbyDevicesController = new ToolController();
         }
 
         private void ScanDevices_Click(object sender, RoutedEventArgs e)
         {
+            nearbyDevicesListBox.Items.Clear();                      
+
             var tools = nearbyDevicesController.AllTools().Select(x => new ToolViewModel
             {
                  ID=x.Key,
@@ -41,7 +42,8 @@ namespace RedTooth.UIApp
                  MPBID=x.Value.MPBID,
                  Name=x.Value.Name,
                  RSSI=x.Value.RSSI
-            });
+            }).OrderBy(x=>x.RSSI);
+
             nearbyDevicesListBox.ItemsSource = tools;                        
         }
 
@@ -63,6 +65,11 @@ namespace RedTooth.UIApp
             {
                 MessageBox.Show("SELECT A TOOL!");
             }
-        }        
+        }
+
+        private void Reset_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }

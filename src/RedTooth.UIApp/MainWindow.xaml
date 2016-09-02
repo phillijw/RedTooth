@@ -5,12 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:RedTooth.UIApp"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
+        Title="MainWindow" Height="673.418" Width="901.582" SizeToContent="WidthAndHeight">
     <Window.Resources>
         <DataTemplate x:Key="listBoxTemplate">
             <StackPanel Margin="3">
                 <DockPanel >
-                  <TextBlock FontWeight="Bold" Text="Name:"
+                    <TextBlock FontWeight="Bold" Text="Name:"
                         DockPanel.Dock="Left"
                         Margin="5,0,10,0"/>
                     <TextBlock Text="  " />
@@ -32,7 +32,7 @@
                     <TextBlock FontWeight="Bold" Text="RSSI:"   
                         DockPanel.Dock="Left"
                         Margin="5,0,5,0"/>
-                    <TextBlock Text="{Binding RSSI}" Foreground="Red" />                    
+                    <TextBlock Text="{Binding RSSI}" Foreground="Red" />
                 </DockPanel>
                 <DockPanel>
                     <Button Name="Connect" Content="Connect" Click="Connect_Click" />
@@ -79,15 +79,15 @@
             </DoubleAnimationUsingKeyFrames>
         </Storyboard>
     </Window.Resources>
-    <Window.Triggers>
-        <EventTrigger RoutedEvent="FrameworkElement.Loaded"/>
-        <EventTrigger RoutedEvent="ButtonBase.Click" SourceName="button">
-            <BeginStoryboard Storyboard="{StaticResource OnClick1}"/>
-        </EventTrigger>
-    </Window.Triggers>
     <Grid>
-        <UniformGrid Margin="180.496,5.473,10,16.078">
-            <ListBox x:Name="nearbyDevicesListBox" ItemTemplate="{StaticResource listBoxTemplate}" Margin="0,34.728,-217.669,-164.238" RenderTransformOrigin="0.5,0.5">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0*"/>
+            <ColumnDefinition Width="86*"/>
+            <ColumnDefinition Width="393*"/>
+            <ColumnDefinition Width="38*"/>
+        </Grid.ColumnDefinitions>
+        <UniformGrid Margin="91,0,194.911,187" Grid.Column="2">
+            <ListBox x:Name="nearbyDevicesListBox" ItemTemplate="{StaticResource listBoxTemplate}" Margin="0,10,-252,-174" RenderTransformOrigin="0.5,0.5">
                 <ListBox.RenderTransform>
                     <TransformGroup>
                         <ScaleTransform/>
@@ -97,30 +97,8 @@
                     </TransformGroup>
                 </ListBox.RenderTransform>
             </ListBox>
-            <Button x:Name="button" Content="Send All" HorizontalAlignment="Right" Width="98.597" Margin="0,0,-88.757,-198.966" Height="22.248" VerticalAlignment="Bottom" RenderTransformOrigin="0.5,0.5">
-                <Button.RenderTransform>
-                    <TransformGroup>
-                        <ScaleTransform/>
-                        <SkewTransform/>
-                        <RotateTransform/>
-                        <TranslateTransform/>
-                    </TransformGroup>
-                </Button.RenderTransform>
-            </Button>
-            <TextBlock x:Name="textBlock" TextWrapping="Wrap" Text="Product:" HorizontalAlignment="Left" Width="45.039" Margin="-187.823,0,0,-195.598" Height="15.736" VerticalAlignment="Bottom"/>
-            <TextBox x:Name="textBox" TextWrapping="Wrap" Text="TextBox" Margin="0,0,-53.414,-99.483" HorizontalAlignment="Right" Height="22.248" VerticalAlignment="Bottom" Width="82.364" RenderTransformOrigin="0.5,0.5">
-                <TextBox.RenderTransform>
-                    <TransformGroup>
-                        <ScaleTransform/>
-                        <SkewTransform/>
-                        <RotateTransform/>
-                        <TranslateTransform/>
-                    </TransformGroup>
-                </TextBox.RenderTransform>
-            </TextBox>
-            <TextBlock x:Name="textBlock1" Height="29.728" Margin="-104.494,-99.483,-72.099,0" TextWrapping="Wrap" Text="ONE-KEY Devices" VerticalAlignment="Top"/>
         </UniformGrid>
-        <Separator x:Name="separator" HorizontalAlignment="Left" Height="Auto" Margin="154.992,3.302,0,7.938" Style="{DynamicResource SimpleSeparator}" Width="4.884" RenderTransformOrigin="0.5,0.5">
+        <Separator x:Name="separator" HorizontalAlignment="Left" Height="Auto" Margin="69,3,0,8" Style="{DynamicResource SimpleSeparator}" Width="5" RenderTransformOrigin="0.5,0.5" Grid.Column="2">
             <Separator.RenderTransform>
                 <TransformGroup>
                     <ScaleTransform/>
@@ -130,7 +108,7 @@
                 </TransformGroup>
             </Separator.RenderTransform>
         </Separator>
-        <Button x:Name="ScanDevices" Content="Scan&#xD;&#xA;Devices" HorizontalAlignment="Left" Height="49.923" Margin="32.357,82.527,0,0" VerticalAlignment="Top" Width="90.077" RenderTransformOrigin="0.5,0.5" Click="ScanDevices_Click">
+        <Button x:Name="ScanDevices" Content="Scan&#xD;&#xA;Devices" HorizontalAlignment="Left" Height="49" Margin="32,83,0,0" VerticalAlignment="Top" Width="90" RenderTransformOrigin="0.5,0.5" Click="ScanDevices_Click" Grid.ColumnSpan="3">
             <Button.RenderTransform>
                 <TransformGroup>
                     <ScaleTransform/>
@@ -140,16 +118,16 @@
                 </TransformGroup>
             </Button.RenderTransform>
         </Button>
-        <ComboBox x:Name="comboBox" HorizontalAlignment="Left" Margin="32.357,152.612,0,145.14" Width="90.077" RenderTransformOrigin="0.5,0.5">
-            <ComboBox.RenderTransform>
+        <Separator x:Name="buttonSeparator" HorizontalAlignment="Left" Height="Auto" Margin="69,3,0,8" Style="{DynamicResource SimpleSeparator}" Width="5" RenderTransformOrigin="0.5,0.5" Grid.Column="2">
+            <Separator.RenderTransform>
                 <TransformGroup>
                     <ScaleTransform/>
                     <SkewTransform/>
                     <RotateTransform/>
                     <TranslateTransform/>
                 </TransformGroup>
-            </ComboBox.RenderTransform>
-        </ComboBox>
-
+            </Separator.RenderTransform>
+        </Separator>
+        <Button x:Name="Reset" Content="Reset" HorizontalAlignment="Left" Height="50" Margin="32,152,0,0" VerticalAlignment="Top" Width="90" RenderTransformOrigin="0.5,0.5" Click="Reset_Click" Grid.ColumnSpan="3"></Button>
     </Grid>
 </Window>
