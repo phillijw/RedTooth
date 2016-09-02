@@ -10,13 +10,14 @@ using RedTooth.Core;
 
 namespace RedTooth.Core.Controller
 {
-    public class ToolControler
+    public class ToolController : IDisposable
     {
         private ConnectionManager cm;
-        public ToolControler()
+        public ToolController()
         {
             //Conn
             cm = new ConnectionManager();
+            System.Threading.Thread.Sleep(1000);
         }
 
         public SortedDictionary<int, String> AllMpbid(int SortSelector = 0)
@@ -27,10 +28,10 @@ namespace RedTooth.Core.Controller
         public SortedDictionary<int, Tool> AllTools(int SortSelector = 0)
         {
             Dictionary<String, Tool> allTools = cm.localTools;
-            SortedDictionary<int, Tool> returnTools = new SortedDictionary<int, Tool>();
+            var returnTools = new SortedDictionary<int, Tool>();
+            
             foreach (var tool in allTools)
             {
-
                 returnTools.Add(tool.Value.ID, tool.Value);
             }
 
@@ -48,6 +49,11 @@ namespace RedTooth.Core.Controller
         public bool SendCommand(int toolID)
         {
             return true;
+        }
+
+        public void Dispose()
+        {
+            cm.Dispose();
         }
     }
 }

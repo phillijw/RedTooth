@@ -15,7 +15,7 @@ using RedTooth.Core.Model;
 namespace MKBLE
 {
     //All code from https://github.com/jrowberg/bglib/tree/master/MSVCSharp/Examples
-    public class ConnectionManager
+    public class ConnectionManager : IDisposable
     {
         public Bluegiga.BGLib bglib = new Bluegiga.BGLib();
         System.IO.Ports.SerialPort serialAPI = new System.IO.Ports.SerialPort();
@@ -24,9 +24,10 @@ namespace MKBLE
         //Only one connection for now. Will update later
         //Seems like this is an incremental counter counting up connections. 
         public Byte connection_handle = 0;              // connection handle (will always be 0 if only one connection happens at a time)
-        private String logLocation = "c:\\temp\\hackout\\blelog.txt";
+        private String logLocation = @"c:\temp\hackout\blelog.txt";
         private BluetoothState connState = BluetoothState.STATE_STANDBY;
         private ushort ToolCharactaristic;
+
         public ConnectionManager()
         {
             OpenConnection();
@@ -54,7 +55,6 @@ namespace MKBLE
             bglib.BLEEventATTClientProcedureCompleted += new Bluegiga.BLE.Events.ATTClient.ProcedureCompletedEventHandler(this.ProcedureCompleteEvent);
             bglib.BLEEventATTClientAttributeValue += bglib_BLEEventATTClientAttributeValue;
             bglib.BLEEventATTClientFindInformationFound += ClientFindInformationEvent;
-            //bglib.BLEEventATTClientAttributeFound += new Bluegiga
             bglib.BLEEventATTClientGroupFound += BglibOnBleEventAttClientGroupFound;
             Console.WriteLine("Events Set");
 
@@ -73,11 +73,9 @@ namespace MKBLE
             bglib.SendCommand(serialAPI, bglib.BLECommandGAPEndProcedure());
         }
 
-        private void DataReceivedHandler(
-                                object sender,
-                                System.IO.Ports.SerialDataReceivedEventArgs e)
+        private void DataReceivedHandler(object sender, System.IO.Ports.SerialDataReceivedEventArgs e)
         {
-            System.IO.Ports.SerialPort sp = (System.IO.Ports.SerialPort)sender;
+            var sp = (System.IO.Ports.SerialPort)sender;
             var bytesToRead = sp.BytesToRead;
             var inData = new Byte[bytesToRead];
 
@@ -143,7 +141,7 @@ namespace MKBLE
                     t.ID = localTools.Count() + 1;
                     localTools.Add(ByteArrayToHexString(e.sender), t);
                     Console.WriteLine("Found: " + mpbid + " : " + localTools.Count.ToString());
-                    if (mpbid == "0007000D36")
+                    if (mpbid == "0007000D36" || mpbid == "0007005DF1")
                     {
                         Console.WriteLine("Found 5698-----------------------------------");
                         //Connect
@@ -255,7 +253,7 @@ namespace MKBLE
                );
             Console.WriteLine(log);
             //TODO capture start and end for finding the attribute
-            Console.WriteLine(String.Format("Servics start {0} and end {1}", e.start, e.end));
+            Console.WriteLine(String.Format("Services start {0} and end {1}", e.start, e.end));
             connState = BluetoothState.STATE_FINDING_SERVICES;
 
         }
@@ -342,7 +340,7 @@ namespace MKBLE
             return hex.ToString();
         }
 
-        public void ResetAll()
+        public void Dispose()
         {
             // stop everything we're doing, if possible
             Byte[] cmd;
