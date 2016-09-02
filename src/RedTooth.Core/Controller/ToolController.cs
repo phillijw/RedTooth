@@ -57,7 +57,7 @@ namespace RedTooth.Core.Controller
         public static SortedDictionary<int, Tool> MockTools(int SortSelector = 0)
         {
             var tools = new SortedDictionary<int, Tool>();
-            var numGen = new Random(5000);
+            var numGen = new Random();
 
             byte[] bytes = new byte[256];
             numGen.NextBytes(bytes);
@@ -71,7 +71,7 @@ namespace RedTooth.Core.Controller
                     BluetoothAddress = bytes.Take(8).ToArray(),
                     ConnectionHandle = bytes[i + 1],
                     ID = i,
-                    MPBID = bytes.Take(32).ToString(),
+                    MPBID = ByteArrayToString(bytes.Take(8).ToArray()),
                     RSSI = numGen.Next()
                 };
                 tool.Name = LookupProductName(tool.MPBID);
@@ -84,6 +84,12 @@ namespace RedTooth.Core.Controller
         private static string LookupProductName(string MPBID)
         {
             return String.Empty;
+        }
+
+        public static string ByteArrayToString(byte[] ba)
+        {
+            string hex = BitConverter.ToString(ba);
+            return hex.Replace("-", "");
         }
     }
 }

@@ -14,6 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Globalization;
 
 namespace RedTooth.UIApp
 {
@@ -34,8 +35,14 @@ namespace RedTooth.UIApp
 
         private void ScanDevices_Click(object sender, RoutedEventArgs e)
         {
-            var tools = ToolController.MockTools();
-            nearbyDevicesListBox.ItemsSource = tools;            
+            var tools = ToolController.MockTools().Select(x => new ToolViewModel
+            {
+                 BluetoothAddress=ToolController.ByteArrayToString(x.Value.BluetoothAddress),
+                 MPBID=x.Value.MPBID,
+                 Name=x.Value.Name,
+                 RSSI=x.Value.RSSI
+            });
+            nearbyDevicesListBox.ItemsSource = tools;                        
         }
     }
 }

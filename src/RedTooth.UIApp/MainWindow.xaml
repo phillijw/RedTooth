@@ -10,21 +10,29 @@
         <DataTemplate x:Key="listBoxTemplate">
             <StackPanel Margin="3">
                 <DockPanel >
-                  <TextBlock FontWeight="Bold" Text="Bluetooth Address:"
+                  <TextBlock FontWeight="Bold" Text="Name:"
                   DockPanel.Dock="Left"
                   Margin="5,0,10,0"/>
                     <TextBlock Text="  " />
-                    <TextBlock Text="{Binding Bluet}" Foreground="Green" FontWeight="Bold" />
+                    <TextBlock Text="{Binding Name}" Foreground="Green" FontWeight="Bold" />
                 </DockPanel>
                 <DockPanel >
-                    <TextBlock FontWeight="Bold" Text="Address:" Foreground ="DarkOrange" 
+                    <TextBlock FontWeight="Bold" Text="Bluetooth Address:" Foreground ="DarkOrange" 
+                  DockPanel.Dock="Left"
+                  Margin="5,0,5,0" />
+                    <TextBlock Text="{Binding BluetoothAddress}"/>
+                </DockPanel>
+                <DockPanel>
+                    <TextBlock FontWeight="Bold" Text="MPBID:" Foreground ="DarkRed"  
                   DockPanel.Dock="Left"
                   Margin="5,0,5,0"/>
-                    <TextBlock Text="{Binding Address}" />
-                    <TextBlock Text=", " />
-                    <TextBlock Text="{Binding City}" />
-                    <TextBlock Text=", " />
-                    <TextBlock Text="{Binding Country}" />
+                    <TextBlock Text="{Binding MPBID}" />
+                </DockPanel>
+                <DockPanel>
+                    <TextBlock FontWeight="Bold" Text="RSSI:" Foreground ="DarkRed"  
+                  DockPanel.Dock="Left"
+                  Margin="5,0,5,0"/>
+                    <TextBlock Text="{Binding RSSI}" />
                 </DockPanel>
             </StackPanel>
         </DataTemplate>
@@ -76,7 +84,7 @@
     </Window.Triggers>
     <Grid>
         <UniformGrid Margin="180.496,5.473,10,16.078">
-            <ListBox x:Name="nearbyDevicesListBox" Margin="0,34.728,-217.669,-164.238" RenderTransformOrigin="0.5,0.5">
+            <ListBox x:Name="nearbyDevicesListBox" ItemTemplate="{StaticResource listBoxTemplate}" Margin="0,34.728,-217.669,-164.238" RenderTransformOrigin="0.5,0.5">
                 <ListBox.RenderTransform>
                     <TransformGroup>
                         <ScaleTransform/>
